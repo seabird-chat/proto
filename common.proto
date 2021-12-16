@@ -1,9 +1,9 @@
 syntax = "proto3";
 
+package common;
+
 option java_package = "io.coded.seabird.common";
 option go_package = ".;pb";
-
-package common;
 
 // All IDs come in two forms - relative and absolute. Relative IDs are sent only
 // by chat backends, while Absolute IDs will only be seen by plugins. A backend
@@ -59,10 +59,10 @@ message Backend {
   string type = 2;
 }
 
-// When sent by a chat backend, the ID MUST be unique across users in that running
-// backend. Failure to follow this will result in incorrect information being
-// sent to plugins. When sent by core to a plugin, the ID MUST be an ID pointing
-// to an instance of a user on chat backend.
+// When sent by a chat backend, the ID MUST be unique across users in that
+// running backend. Failure to follow this will result in incorrect information
+// being sent to plugins. When sent by core to a plugin, the ID MUST be an ID
+// pointing to an instance of a user on chat backend.
 message User {
   string id = 1;
   string display_name = 2;
