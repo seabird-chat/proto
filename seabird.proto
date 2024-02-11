@@ -166,39 +166,6 @@ message LeaveChannelRequest {
 
 message LeaveChannelResponse {}
 
-// Request to list all connected backends.
-message ListBackendsRequest {}
-
-message ListBackendsResponse {
-  repeated common.Backend backends = 1;
-}
-
-// Get info about a specific connected backend.
-message BackendInfoRequest {
-  string backend_id = 1;
-}
-
-message BackendInfoResponse {
-  common.Backend Backend = 1;
-  map<string, string> metadata = 2;
-}
-
-message ListChannelsRequest {
-  string backend_id = 1;
-}
-
-message ListChannelsResponse {
-  repeated common.Channel channels = 1;
-}
-
-message ChannelInfoRequest {
-  string channel_id = 1;
-}
-
-message ChannelInfoResponse {
-  common.Channel channel = 1;
-}
-
 message UpdateChannelInfoRequest {
   string channel_id = 1;
   string topic = 2;
@@ -207,21 +174,6 @@ message UpdateChannelInfoRequest {
 }
 
 message UpdateChannelInfoResponse {}
-
-// A request for metadata about the running core instance.
-message CoreInfoRequest {}
-
-// Metadata about the running core instance.
-message CoreInfoResponse {
-  uint64 startup_timestamp = 1;
-  uint64 current_timestamp = 2;
-}
-
-message CommandsRequest {}
-
-message CommandsResponse {
-  map<string, CommandMetadata> commands = 1;
-}
 
 service Seabird {
   rpc StreamEvents(StreamEventsRequest) returns (stream Event);
@@ -234,16 +186,4 @@ service Seabird {
   rpc JoinChannel(JoinChannelRequest) returns (JoinChannelResponse);
   rpc LeaveChannel(LeaveChannelRequest) returns (LeaveChannelResponse);
   rpc UpdateChannelInfo(UpdateChannelInfoRequest) returns (UpdateChannelInfoResponse);
-
-  // Chat backend introspection
-  rpc ListBackends(ListBackendsRequest) returns (ListBackendsResponse);
-  rpc GetBackendInfo(BackendInfoRequest) returns (BackendInfoResponse);
-
-  // Chat connection introspection
-  rpc ListChannels(ListChannelsRequest) returns (ListChannelsResponse);
-  rpc GetChannelInfo(ChannelInfoRequest) returns (ChannelInfoResponse);
-
-  // Seabird introspection
-  rpc GetCoreInfo(CoreInfoRequest) returns (CoreInfoResponse);
-  rpc RegisteredCommands(CommandsRequest) returns (CommandsResponse);
 }
