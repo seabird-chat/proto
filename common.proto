@@ -160,12 +160,16 @@ message Block {
     ItalicsBlock italics = 4;
     BoldBlock bold = 5;
     UnderlineBlock underline = 6;
-    ColorBlock color = 7;
-    MentionBlock mention = 8;
-    SpoilerBlock spoiler = 9;
-    ActionBlock action = 10;
-    ListBlock list = 11;
-    LinkBlock link = 12;
+    StrikethroughBlock strikethrough = 7;
+    InlineCodeBlock inline_code = 8;
+    FencedCodeBlock fenced_code = 9;
+    ColorBlock color = 10;
+    MentionBlock mention = 11;
+    SpoilerBlock spoiler = 12;
+    ActionBlock action = 13;
+    ListBlock list = 14;
+    LinkBlock link = 15;
+    BlockquoteBlock blockquote = 16;
   }
 }
 
@@ -190,6 +194,25 @@ message BoldBlock {
 // inside it.
 message UnderlineBlock {
   repeated Block inner = 1;
+}
+
+// StrikethroughBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message StrikethroughBlock {
+  repeated Block inner = 1;
+}
+
+// InlineCodeBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message InlineCodeBlock {
+  string text = 1;
+}
+
+// FencedCodeBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message FencedCodeBlock {
+  string info = 1;
+  string text = 2;
 }
 
 message Color {
@@ -243,4 +266,10 @@ message ListBlock {
 message LinkBlock {
   string url = 1;
   repeated Block inner = 2;
+}
+
+// BlockquoteBlock is a container block, signifying that the inner blocks are
+// all in a blockquote.
+message BlockquoteBlock {
+  repeated Block inner = 1;
 }
