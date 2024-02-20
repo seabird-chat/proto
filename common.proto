@@ -159,12 +159,13 @@ message Block {
     TextBlock text = 3;
     ItalicsBlock italics = 4;
     BoldBlock bold = 5;
-    ColorBlock color = 6;
-    MentionBlock mention = 7;
-    SpoilerBlock spoiler = 8;
-    ActionBlock action = 9;
-    ListBlock list = 10;
-    LinkBlock link = 11;
+    UnderlineBlock underline = 6;
+    ColorBlock color = 7;
+    MentionBlock mention = 8;
+    SpoilerBlock spoiler = 9;
+    ActionBlock action = 10;
+    ListBlock list = 11;
+    LinkBlock link = 12;
   }
 }
 
@@ -182,6 +183,12 @@ message ItalicsBlock {
 // BoldBlock is a formatting block, applying the formatting to all blocks
 // inside it.
 message BoldBlock {
+  repeated Block inner = 1;
+}
+
+// UnderlineBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message UnderlineBlock {
   repeated Block inner = 1;
 }
 
