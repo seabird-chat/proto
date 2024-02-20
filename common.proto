@@ -92,6 +92,7 @@ message ChannelSource {
 message MessageEvent {
   ChannelSource source = 1;
   string text = 2;
+  repeated Block blocks = 3;
 }
 
 // PrivateMessageEvent will be sent when a user sends a message directly to the
@@ -99,19 +100,22 @@ message MessageEvent {
 message PrivateMessageEvent {
   common.User source = 1;
   string text = 2;
+  repeated Block blocks = 3;
 }
 
 // MentionEvent will be sent when a user mentions the chat backend's user at the
-// start of a message in a channel. Note that this may eventually go away when a
-// more general message format is developed.
+// start of a message in a channel.
+//
+// This has been deprecated in favor of MessageEvents containing a MentionBlock.
 message MentionEvent {
   ChannelSource source = 1;
   string text = 2;
+  repeated Block blocks = 3;
 }
 
 // CommandEvent will be sent when a user issues a command in a channel. Commands
-// cannot be issued via private message. If a message is parsed as a command, it
-// MUST NOT be also sent as another message type.
+// cannot currently be issued via private message. If a message is parsed as a
+// command, it MUST NOT be also sent as another message type.
 message CommandEvent {
   ChannelSource source = 1;
   string command = 2;
@@ -120,9 +124,12 @@ message CommandEvent {
 
 // ActionEvent will be sent when a user takes an action in a channel. This is
 // often triggered with /me.
+//
+// This has been deprecated in favor of MessageEvents containing an ActionBlock.
 message ActionEvent {
   ChannelSource source = 1;
   string text = 2;
+  repeated Block blocks = 3;
 }
 
 // PrivateActionEvent will be sent when a user takes an action in a private
@@ -130,4 +137,83 @@ message ActionEvent {
 message PrivateActionEvent {
   common.User source = 1;
   string text = 2;
+  repeated Block blocks = 3;
+}
+
+// Block defines the base message format. It is essentially a tree
+message Block {
+  // Having a raw string on the Block type allows us to add additional types to
+  // the inner block, while allowing existing clients to fall back to the raw
+  // string.
+  //
+  // If a client does not include the "raw" property, it will be re-hydrated by
+  // seabird-core.
+  string raw = 1;
+
+  oneof inner {
+    PlainBlock plain = 2;
+    ItalicsBlock italics = 3;
+    BoldBlock bold = 4;
+    ColorBlock color = 5;
+    MentionBlock mention = 6;
+    SpoilerBlock spoiler = 7;
+    ActionBlock action = 8;
+  }
+}
+
+// PlainBlock is a simple text block. It does not have any child blocks.
+message PlainBlock {
+  string text = 1;
+}
+
+// ItalicsBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message ItalicsBlock {
+  repeated Block inner = 1;
+}
+
+// BoldBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message BoldBlock {
+  repeated Block inner = 1;
+}
+
+message Color {
+  // Each value is a float in the range [0, 1] representing a color component.
+
+  // Red, Green, Blue
+  float r = 1;
+  float g = 2;
+  float b = 3;
+
+  // Alpha
+  float a = 4;
+}
+
+// ColorBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message ColorBlock {
+  Color color = 1;
+
+  repeated Block inner = 3;
+}
+
+// MentionBlock is a simple text block containing only a mentioned user. It does
+// not have any child blocks.
+message MentionBlock {
+  User user = 1;
+}
+
+// SpoilerBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message SpoilerBlock {
+  repeated Block inner = 2;
+}
+
+// ActionBlock is a root container block, signifying that the inner blocks are a
+// part of an "action", usually from /me on IRC. A message is only a valid
+// action if the only root level block is an action. Any nested ActionBlocks can
+// be ignored.
+message ActionBlock {
+  repeated Block inner = 1;
 }
