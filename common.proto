@@ -146,30 +146,25 @@ message Block {
   // the inner block, while allowing existing clients to fall back to the raw
   // string.
   //
-  // If a client does not include the "raw" or "plain" properties, they will be
-  // re-hydrated by seabird-core.
-
-  // The input text
-  string raw = 1;
+  // Seabird will always re-hydrate the "plain" property from the blocks.
 
   // The parsed text with all formatting removed
-  string plain = 2;
+  string plain = 1;
 
   oneof inner {
-    TextBlock text = 3;
-    ItalicsBlock italics = 4;
-    BoldBlock bold = 5;
-    UnderlineBlock underline = 6;
-    StrikethroughBlock strikethrough = 7;
-    InlineCodeBlock inline_code = 8;
-    FencedCodeBlock fenced_code = 9;
-    ColorBlock color = 10;
-    MentionBlock mention = 11;
-    SpoilerBlock spoiler = 12;
-    ActionBlock action = 13;
-    ListBlock list = 14;
-    LinkBlock link = 15;
-    BlockquoteBlock blockquote = 16;
+    TextBlock text = 2;
+    ItalicsBlock italics = 3;
+    BoldBlock bold = 4;
+    UnderlineBlock underline = 5;
+    StrikethroughBlock strikethrough = 6;
+    InlineCodeBlock inline_code = 7;
+    FencedCodeBlock fenced_code = 8;
+    MentionBlock mention = 9;
+    SpoilerBlock spoiler = 10;
+    ActionBlock action = 11;
+    ListBlock list = 12;
+    LinkBlock link = 13;
+    BlockquoteBlock blockquote = 14;
   }
 }
 
@@ -213,26 +208,6 @@ message InlineCodeBlock {
 message FencedCodeBlock {
   string info = 1;
   string text = 2;
-}
-
-message Color {
-  // Each value is a float in the range [0, 1] representing a color component.
-
-  // Red, Green, Blue
-  float r = 1;
-  float g = 2;
-  float b = 3;
-
-  // Alpha
-  float a = 4;
-}
-
-// ColorBlock is a formatting block, applying the formatting to all blocks
-// inside it.
-message ColorBlock {
-  Color color = 1;
-
-  repeated Block inner = 3;
 }
 
 // MentionBlock is a simple text block containing only a mentioned user. It does
