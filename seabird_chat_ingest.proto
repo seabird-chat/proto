@@ -1,10 +1,11 @@
 syntax = "proto3";
 
-package seabird;
-import "common.proto";
-
 option java_package = "io.coded.seabird.chat_ingest";
 option go_package = ".;pb";
+
+import "common.proto";
+
+package seabird;
 
 // Note that all of the types in this file end with ChatRequest or end with
 // ChatEvent to prevent namespace conflicts between the main seabird.proto file.
@@ -71,9 +72,9 @@ message LeaveChannelChatRequest {
   map<string, string> tags = 2;
 }
 
-// UpdateChannelInfoChatRequest requests for a the channel to be updated with
-// the given metadata. Either ChangeChannelEvent or FailedChatEvent SHOULD be
-// returned in response if possible.
+// UpdateChannelInfoChatRequest requests for a the channel to be updated with the
+// given metadata. Either ChangeChannelEvent or FailedChatEvent SHOULD be returned
+// in response if possible.
 message UpdateChannelInfoChatRequest {
   string channel_id = 1;
   string topic = 2;
@@ -83,8 +84,7 @@ message UpdateChannelInfoChatRequest {
 
 // MetadataChatRequest requests metadata about the given backend. seabird-core
 // expects the backend to respond with a MetadataChatEvent object.
-message MetadataChatRequest {
-}
+message MetadataChatRequest {}
 
 // Each ChatRequest has an ID (which can be attached to requests coming from
 // core) and an inner message type. Having an ID allows us to route an event
@@ -123,8 +123,7 @@ message HelloChatEvent {
 // This is a marker event to respond to seabird-core that performing an action
 // has succeeded. Note that most requests have explicit associated Events, so
 // this should only be used in absence of a matching event.
-message SuccessChatEvent {
-}
+message SuccessChatEvent {}
 
 // This is a marker event to respond to seabird-core that performing an action
 // has failed. Failed events do not in any way affect chat backends. They serve
@@ -205,6 +204,5 @@ message ChatEvent {
 // allow multiple different chat backends to register to Core and allow plugins
 // to communicate with them.
 service ChatIngest {
-  rpc IngestEvents(stream ChatEvent)
-    returns (stream ChatRequest);
+  rpc IngestEvents(stream ChatEvent) returns (stream ChatRequest);
 }
