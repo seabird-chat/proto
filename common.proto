@@ -146,23 +146,30 @@ message Block {
   // the inner block, while allowing existing clients to fall back to the raw
   // string.
   //
-  // If a client does not include the "raw" property, it will be re-hydrated by
-  // seabird-core.
+  // If a client does not include the "raw" or "plain" properties, they will be
+  // re-hydrated by seabird-core.
+
+  // The input text
   string raw = 1;
 
+  // The parsed text with all formatting removed
+  string plain = 2;
+
   oneof inner {
-    PlainBlock plain = 2;
-    ItalicsBlock italics = 3;
-    BoldBlock bold = 4;
-    ColorBlock color = 5;
-    MentionBlock mention = 6;
-    SpoilerBlock spoiler = 7;
-    ActionBlock action = 8;
+    TextBlock text = 3;
+    ItalicsBlock italics = 4;
+    BoldBlock bold = 5;
+    ColorBlock color = 6;
+    MentionBlock mention = 7;
+    SpoilerBlock spoiler = 8;
+    ActionBlock action = 9;
+    ListBlock list = 10;
+    LinkBlock link = 11;
   }
 }
 
-// PlainBlock is a simple text block. It does not have any child blocks.
-message PlainBlock {
+// TextBlock is a simple text block. It does not have any child blocks.
+message TextBlock {
   string text = 1;
 }
 
@@ -216,4 +223,17 @@ message SpoilerBlock {
 // be ignored.
 message ActionBlock {
   repeated Block inner = 1;
+}
+
+// ListBlock is a container block, signifying that the inner blocks are all list
+// items.
+message ListBlock {
+  repeated Block items = 1;
+}
+
+// LinkBlock represents a link. The URL is the URL, and the inner blocks are the
+// link text.
+message LinkBlock {
+  string url = 1;
+  repeated Block inner = 2;
 }
