@@ -233,7 +233,7 @@ message ActionBlock {
 // ListBlock is a container block, signifying that the inner blocks are all list
 // items.
 message ListBlock {
-  repeated Block items = 1;
+  repeated Block inner = 1;
 }
 
 // LinkBlock represents a link. The URL is the URL, and the inner blocks are the
