@@ -79,6 +79,7 @@ message ChannelSource {
 message MessageEvent {
   ChannelSource source = 1;
   string text = 2;
+  repeated Block blocks = 3;
 }
 
 // PrivateMessageEvent will be sent when a user sends a message directly to the
@@ -86,19 +87,22 @@ message MessageEvent {
 message PrivateMessageEvent {
   common.User source = 1;
   string text = 2;
+  repeated Block blocks = 3;
 }
 
 // MentionEvent will be sent when a user mentions the chat backend's user at the
-// start of a message in a channel. Note that this may eventually go away when a
-// more general message format is developed.
+// start of a message in a channel.
+//
+// This has been deprecated in favor of MessageEvents containing a MentionBlock.
 message MentionEvent {
   ChannelSource source = 1;
   string text = 2;
+  repeated Block blocks = 3;
 }
 
 // CommandEvent will be sent when a user issues a command in a channel. Commands
-// cannot be issued via private message. If a message is parsed as a command, it
-// MUST NOT be also sent as another message type.
+// cannot currently be issued via private message. If a message is parsed as a
+// command, it MUST NOT be also sent as another message type.
 message CommandEvent {
   ChannelSource source = 1;
   string command = 2;
@@ -107,9 +111,12 @@ message CommandEvent {
 
 // ActionEvent will be sent when a user takes an action in a channel. This is
 // often triggered with /me.
+//
+// This has been deprecated in favor of MessageEvents containing an ActionBlock.
 message ActionEvent {
   ChannelSource source = 1;
   string text = 2;
+  repeated Block blocks = 3;
 }
 
 // PrivateActionEvent will be sent when a user takes an action in a private
@@ -117,4 +124,114 @@ message ActionEvent {
 message PrivateActionEvent {
   common.User source = 1;
   string text = 2;
+  repeated Block blocks = 3;
+}
+
+// Block defines the base message format. It is essentially a tree
+message Block {
+  // Having a raw string on the Block type allows us to add additional types to
+  // the inner block, while allowing existing clients to fall back to the raw
+  // string.
+  //
+  // Seabird will always re-hydrate the "plain" property from the blocks.
+
+  // The parsed text with all formatting removed
+  string plain = 1;
+
+  oneof inner {
+    TextBlock text = 2;
+    ItalicsBlock italics = 3;
+    BoldBlock bold = 4;
+    UnderlineBlock underline = 5;
+    StrikethroughBlock strikethrough = 6;
+    InlineCodeBlock inline_code = 7;
+    FencedCodeBlock fenced_code = 8;
+    MentionBlock mention = 9;
+    SpoilerBlock spoiler = 10;
+    ActionBlock action = 11;
+    ListBlock list = 12;
+    LinkBlock link = 13;
+    BlockquoteBlock blockquote = 14;
+  }
+}
+
+// TextBlock is a simple text block. It does not have any child blocks.
+message TextBlock {
+  string text = 1;
+}
+
+// ItalicsBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message ItalicsBlock {
+  repeated Block inner = 1;
+}
+
+// BoldBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message BoldBlock {
+  repeated Block inner = 1;
+}
+
+// UnderlineBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message UnderlineBlock {
+  repeated Block inner = 1;
+}
+
+// StrikethroughBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message StrikethroughBlock {
+  repeated Block inner = 1;
+}
+
+// InlineCodeBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message InlineCodeBlock {
+  string text = 1;
+}
+
+// FencedCodeBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message FencedCodeBlock {
+  string info = 1;
+  string text = 2;
+}
+
+// MentionBlock is a simple text block containing only a mentioned user. It does
+// not have any child blocks.
+message MentionBlock {
+  User user = 1;
+}
+
+// SpoilerBlock is a formatting block, applying the formatting to all blocks
+// inside it.
+message SpoilerBlock {
+  repeated Block inner = 2;
+}
+
+// ActionBlock is a root container block, signifying that the inner blocks are a
+// part of an "action", usually from /me on IRC. A message is only a valid
+// action if the only root level block is an action. Any nested ActionBlocks can
+// be ignored.
+message ActionBlock {
+  repeated Block inner = 1;
+}
+
+// ListBlock is a container block, signifying that the inner blocks are all list
+// items.
+message ListBlock {
+  repeated Block inner = 1;
+}
+
+// LinkBlock represents a link. The URL is the URL, and the inner blocks are the
+// link text.
+message LinkBlock {
+  string url = 1;
+  repeated Block inner = 2;
+}
+
+// BlockquoteBlock is a container block, signifying that the inner blocks are
+// all in a blockquote.
+message BlockquoteBlock {
+  repeated Block inner = 1;
 }
