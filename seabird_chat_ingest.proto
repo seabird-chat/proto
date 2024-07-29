@@ -1,11 +1,12 @@
 syntax = "proto3";
 
-option java_package = "io.coded.seabird.chat_ingest";
-option go_package = ".;pb";
+package seabird;
 
 import "common.proto";
 
-package seabird;
+option java_package = "io.coded.seabird.chat_ingest";
+option go_package = ".;pb";
+
 
 // Note that all of the types in this file end with ChatRequest or end with
 // ChatEvent to prevent namespace conflicts between the main seabird.proto file.
@@ -84,7 +85,8 @@ message UpdateChannelInfoChatRequest {
 
 // MetadataChatRequest requests metadata about the given backend. seabird-core
 // expects the backend to respond with a MetadataChatEvent object.
-message MetadataChatRequest {}
+message MetadataChatRequest {
+}
 
 // Each ChatRequest has an ID (which can be attached to requests coming from
 // core) and an inner message type. Having an ID allows us to route an event
@@ -123,7 +125,8 @@ message HelloChatEvent {
 // This is a marker event to respond to seabird-core that performing an action
 // has succeeded. Note that most requests have explicit associated Events, so
 // this should only be used in absence of a matching event.
-message SuccessChatEvent {}
+message SuccessChatEvent {
+}
 
 // This is a marker event to respond to seabird-core that performing an action
 // has failed. Failed events do not in any way affect chat backends. They serve

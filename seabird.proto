@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-option java_package = "io.coded.seabird.seabird";
-option go_package = ".;pb";
-
 package seabird;
 
 import "common.proto";
+
+option java_package = "io.coded.seabird.seabird";
+option go_package = ".;pb";
 
 // Note that the IDs exposed by the Backend, User, and Channel are opaque IDs
 // which seabird-core will handle and route to the correct backend.
@@ -67,7 +67,8 @@ message PerformActionRequest {
   map<string, string> tags = 3;
 }
 
-message PerformActionResponse {}
+message PerformActionResponse {
+}
 
 // PerformActionEvent will be emitted whenever a plugin or other client calls
 // PerformAction. Note that this will be emitted every time PerformAction is
@@ -88,7 +89,8 @@ message PerformPrivateActionRequest {
   map<string, string> tags = 3;
 }
 
-message PerformPrivateActionResponse {}
+message PerformPrivateActionResponse {
+}
 
 // PerformPrivateActionEvent will be emitted whenever a plugin or other client
 // calls PerformPrivateAction. Note that this will be emitted every time
@@ -109,7 +111,8 @@ message SendMessageRequest {
   map<string, string> tags = 3;
 }
 
-message SendMessageResponse {}
+message SendMessageResponse {
+}
 
 // SendMessageEvent will be emitted whenever a plugin or other client calls
 // SendMessage. Note that this will be emitted every time SendMessage is
@@ -130,7 +133,8 @@ message SendPrivateMessageRequest {
   map<string, string> tags = 3;
 }
 
-message SendPrivateMessageResponse {}
+message SendPrivateMessageResponse {
+}
 
 // SendPrivateMessageEvent will be emitted whenever a plugin or other client
 // calls SendPrivateMessage. Note that this will be emitted every time
@@ -154,7 +158,8 @@ message JoinChannelRequest {
   map<string, string> tags = 3;
 }
 
-message JoinChannelResponse {}
+message JoinChannelResponse {
+}
 
 // Request to leave a channel.
 message LeaveChannelRequest {
@@ -164,10 +169,12 @@ message LeaveChannelRequest {
   map<string, string> tags = 3;
 }
 
-message LeaveChannelResponse {}
+message LeaveChannelResponse {
+}
 
 // Request to list all connected backends.
-message ListBackendsRequest {}
+message ListBackendsRequest {
+}
 
 message ListBackendsResponse {
   repeated common.Backend backends = 1;
@@ -179,7 +186,7 @@ message BackendInfoRequest {
 }
 
 message BackendInfoResponse {
-  common.Backend Backend = 1;
+  common.Backend backend = 1;
   map<string, string> metadata = 2;
 }
 
@@ -206,10 +213,12 @@ message UpdateChannelInfoRequest {
   map<string, string> tags = 3;
 }
 
-message UpdateChannelInfoResponse {}
+message UpdateChannelInfoResponse {
+}
 
 // A request for metadata about the running core instance.
-message CoreInfoRequest {}
+message CoreInfoRequest {
+}
 
 // Metadata about the running core instance.
 message CoreInfoResponse {
@@ -217,7 +226,8 @@ message CoreInfoResponse {
   uint64 current_timestamp = 2;
 }
 
-message CommandsRequest {}
+message CommandsRequest {
+}
 
 message CommandsResponse {
   map<string, CommandMetadata> commands = 1;

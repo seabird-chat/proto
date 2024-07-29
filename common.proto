@@ -1,9 +1,9 @@
 syntax = "proto3";
 
+package common;
+
 option java_package = "io.coded.seabird.common";
 option go_package = ".;pb";
-
-package common;
 
 // All IDs come in two forms - relative and absolute. Relative IDs are sent only
 // by chat backends, while Absolute IDs will only be seen by plugins. A backend
