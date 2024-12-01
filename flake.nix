@@ -21,7 +21,10 @@
           devshell.motd = "";
 
           devshell.packages = [
+            pkgs.buf
             pkgs.protobuf
+            pkgs.protoc-gen-go
+            pkgs.protoc-gen-go-grpc
             pkgs.protolint
           ];
         };
