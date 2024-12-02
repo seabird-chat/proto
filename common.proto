@@ -168,10 +168,10 @@ message Block {
     FencedCodeBlock fenced_code = 8;
     MentionBlock mention = 9;
     SpoilerBlock spoiler = 10;
-    ListBlock list = 12;
-    LinkBlock link = 13;
-    BlockquoteBlock blockquote = 14;
-    TimestampBlock timestamp = 15;
+    ListBlock list = 11;
+    LinkBlock link = 12;
+    BlockquoteBlock blockquote = 13;
+    TimestampBlock timestamp = 14;
   }
 }
 
