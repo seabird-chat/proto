@@ -133,8 +133,6 @@ message CommandEvent {
 
 // ActionEvent will be sent when a user takes an action in a channel. This is
 // often triggered with /me.
-//
-// This has been deprecated in favor of MessageEvents containing an ActionBlock.
 message ActionEvent {
   ChannelSource source = 1;
   string text = 2;
@@ -170,7 +168,6 @@ message Block {
     FencedCodeBlock fenced_code = 8;
     MentionBlock mention = 9;
     SpoilerBlock spoiler = 10;
-    ActionBlock action = 11;
     ListBlock list = 12;
     LinkBlock link = 13;
     BlockquoteBlock blockquote = 14;
@@ -230,14 +227,6 @@ message MentionBlock {
 // inside it.
 message SpoilerBlock {
   repeated Block inner = 2;
-}
-
-// ActionBlock is a root container block, signifying that the inner blocks are a
-// part of an "action", usually from /me on IRC. A message is only a valid
-// action if the only root level block is an action. Any nested ActionBlocks can
-// be ignored.
-message ActionBlock {
-  repeated Block inner = 1;
 }
 
 // ListBlock is a container block, signifying that the inner blocks are all list
