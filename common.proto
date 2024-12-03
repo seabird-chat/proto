@@ -172,6 +172,7 @@ message Block {
     LinkBlock link = 12;
     BlockquoteBlock blockquote = 13;
     TimestampBlock timestamp = 14;
+    ContainerBlock container = 15;
   }
 }
 
@@ -245,6 +246,13 @@ message LinkBlock {
 // BlockquoteBlock is a container block, signifying that the inner blocks are
 // all in a blockquote.
 message BlockquoteBlock {
+  repeated Block inner = 1;
+}
+
+// ContainerBlock is a container block with no formatting, signifying that the
+// inner blocks are grouped together, but nothing more. It is useful for
+// ListBlocks.
+message ContainerBlock {
   repeated Block inner = 1;
 }
 
