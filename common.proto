@@ -173,6 +173,7 @@ message Block {
     BlockquoteBlock blockquote = 13;
     TimestampBlock timestamp = 14;
     ContainerBlock container = 15;
+    HeadingBlock heading = 16;
   }
 }
 
@@ -260,4 +261,11 @@ message ContainerBlock {
 // support timezone-aware timestamps.
 message TimestampBlock {
   google.protobuf.Timestamp inner = 1;
+}
+
+// HeadingBlock represents a heading. It is stored along with an arbitrary
+// heading level.
+message HeadingBlock {
+  int32 level = 1;
+  repeated Block inner = 2;
 }
