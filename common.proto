@@ -101,7 +101,7 @@ message ChannelSource {
 message MessageEvent {
   ChannelSource source = 1;
   string text = 2;
-  repeated Block blocks = 3;
+  Block root_block = 3;
 }
 
 // PrivateMessageEvent will be sent when a user sends a message directly to the
@@ -109,7 +109,7 @@ message MessageEvent {
 message PrivateMessageEvent {
   common.User source = 1;
   string text = 2;
-  repeated Block blocks = 3;
+  Block root_block = 3;
 }
 
 // MentionEvent will be sent when a user mentions the chat backend's user at the
@@ -119,7 +119,7 @@ message PrivateMessageEvent {
 message MentionEvent {
   ChannelSource source = 1;
   string text = 2;
-  repeated Block blocks = 3;
+  Block root_block = 3;
 }
 
 // CommandEvent will be sent when a user issues a command in a channel. Commands
@@ -136,7 +136,7 @@ message CommandEvent {
 message ActionEvent {
   ChannelSource source = 1;
   string text = 2;
-  repeated Block blocks = 3;
+  Block root_block = 3;
 }
 
 // PrivateActionEvent will be sent when a user takes an action in a private
@@ -144,7 +144,7 @@ message ActionEvent {
 message PrivateActionEvent {
   common.User source = 1;
   string text = 2;
-  repeated Block blocks = 3;
+  Block root_block = 3;
 }
 
 // Block defines the base message format. It is essentially a tree
@@ -184,25 +184,25 @@ message TextBlock {
 // ItalicsBlock is a formatting block, applying the formatting to all blocks
 // inside it.
 message ItalicsBlock {
-  repeated Block inner = 1;
+  Block inner = 1;
 }
 
 // BoldBlock is a formatting block, applying the formatting to all blocks
 // inside it.
 message BoldBlock {
-  repeated Block inner = 1;
+  Block inner = 1;
 }
 
 // UnderlineBlock is a formatting block, applying the formatting to all blocks
 // inside it.
 message UnderlineBlock {
-  repeated Block inner = 1;
+  Block inner = 1;
 }
 
 // StrikethroughBlock is a formatting block, applying the formatting to all blocks
 // inside it.
 message StrikethroughBlock {
-  repeated Block inner = 1;
+  Block inner = 1;
 }
 
 // InlineCodeBlock is a formatting block, applying the formatting to all blocks
@@ -221,7 +221,7 @@ message FencedCodeBlock {
 // SpoilerBlock is a formatting block, applying the formatting to all blocks
 // inside it.
 message SpoilerBlock {
-  repeated Block inner = 2;
+  Block inner = 2;
 }
 
 // ListBlock is a container block, signifying that the inner blocks are all list
@@ -234,13 +234,13 @@ message ListBlock {
 // link text.
 message LinkBlock {
   string url = 1;
-  repeated Block inner = 2;
+  Block inner = 2;
 }
 
 // BlockquoteBlock is a container block, signifying that the inner blocks are
 // all in a blockquote.
 message BlockquoteBlock {
-  repeated Block inner = 1;
+  Block inner = 1;
 }
 
 // ContainerBlock is a container block with no formatting, signifying that the
@@ -260,5 +260,5 @@ message TimestampBlock {
 // heading level.
 message HeadingBlock {
   int32 level = 1;
-  repeated Block inner = 2;
+  Block inner = 2;
 }
