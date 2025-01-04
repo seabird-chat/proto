@@ -18,7 +18,7 @@ option go_package = ".;pb";
 message PerformActionChatRequest {
   string channel_id = 1;
   string text = 2;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 
   map<string, string> tags = 3;
 }
@@ -30,7 +30,7 @@ message PerformActionChatRequest {
 message PerformPrivateActionChatRequest {
   string user_id = 1;
   string text = 2;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 
   map<string, string> tags = 3;
 }
@@ -42,7 +42,7 @@ message PerformPrivateActionChatRequest {
 message SendMessageChatRequest {
   string channel_id = 1;
   string text = 2;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 
   map<string, string> tags = 3;
 }
@@ -54,7 +54,7 @@ message SendMessageChatRequest {
 message SendPrivateMessageChatRequest {
   string user_id = 1;
   string text = 2;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 
   map<string, string> tags = 3;
 }

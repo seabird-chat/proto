@@ -63,7 +63,7 @@ message CommandMetadata {
 message PerformActionRequest {
   string channel_id = 1;
   string text = 2;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 
   map<string, string> tags = 3;
 }
@@ -80,14 +80,14 @@ message PerformActionEvent {
 
   string channel_id = 2;
   string text = 3;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 }
 
 // Perform an action in a private message.
 message PerformPrivateActionRequest {
   string user_id = 1;
   string text = 2;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 
   map<string, string> tags = 3;
 }
@@ -104,14 +104,14 @@ message PerformPrivateActionEvent {
 
   string user_id = 2;
   string text = 3;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 }
 
 // Send a message to a given a channel.
 message SendMessageRequest {
   string channel_id = 1;
   string text = 2;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 
   map<string, string> tags = 3;
 }
@@ -128,14 +128,14 @@ message SendMessageEvent {
 
   string channel_id = 2;
   string text = 3;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 }
 
 // Send a private message to a given user.
 message SendPrivateMessageRequest {
   string user_id = 1;
   string text = 2;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 
   map<string, string> tags = 3;
 }
@@ -152,7 +152,7 @@ message SendPrivateMessageEvent {
 
   string user_id = 2;
   string text = 3;
-  repeated common.Block blocks = 4;
+  common.Block root_block = 4;
 }
 
 // Request to join a channel.
