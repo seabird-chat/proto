@@ -166,14 +166,13 @@ message Block {
     StrikethroughBlock strikethrough = 6;
     InlineCodeBlock inline_code = 7;
     FencedCodeBlock fenced_code = 8;
-    MentionBlock mention = 9;
-    SpoilerBlock spoiler = 10;
-    ListBlock list = 11;
-    LinkBlock link = 12;
-    BlockquoteBlock blockquote = 13;
-    TimestampBlock timestamp = 14;
-    ContainerBlock container = 15;
-    HeadingBlock heading = 16;
+    SpoilerBlock spoiler = 9;
+    ListBlock list = 10;
+    LinkBlock link = 11;
+    BlockquoteBlock blockquote = 12;
+    TimestampBlock timestamp = 13;
+    ContainerBlock container = 14;
+    HeadingBlock heading = 15;
   }
 }
 
@@ -217,12 +216,6 @@ message InlineCodeBlock {
 message FencedCodeBlock {
   string info = 1;
   string text = 2;
-}
-
-// MentionBlock is a simple text block containing only a mentioned user. It does
-// not have any child blocks.
-message MentionBlock {
-  User user = 1;
 }
 
 // SpoilerBlock is a formatting block, applying the formatting to all blocks
