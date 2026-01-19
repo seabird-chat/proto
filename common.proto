@@ -42,6 +42,10 @@ option go_package = ".;pb";
 //   plugin uses this, it should respond to both normal events and the "send"
 //   variant of that message (such as MessageEvent/SendMessageEvent or
 //   ActionEvent/PerformActionEvent).
+// - core/original-format - set by seabird-core on all message events to indicate
+//   whether the message was originally provided with 'text' only or with 'blocks'.
+//   Values are 'text' or 'blocks'. Useful for plugins that need to differentiate
+//   between legacy text-only clients and modern block-aware clients.
 //
 // Currently proposed tags:
 // - proxy/source-channel-id - set by the proxy plugin if a message is proxied,
