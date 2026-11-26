@@ -24,7 +24,8 @@ message PerformActionChatRequest {
 
   // Who the action is on behalf of, if anyone. Only set for backends with
   // BACKEND_FEATURE_AUTHOR. See BackendFeature. Backends never see seabird
-  // IDs, so only the author's display_name and their backend's type are set.
+  // IDs, so only the author's display_name and their backend's type and
+  // display_name are set.
   common.User author = 5;
   common.Backend author_backend = 6;
 }
@@ -54,7 +55,8 @@ message SendMessageChatRequest {
 
   // Who the message is on behalf of, if anyone. Only set for backends with
   // BACKEND_FEATURE_AUTHOR. See BackendFeature. Backends never see seabird
-  // IDs, so only the author's display_name and their backend's type are set.
+  // IDs, so only the author's display_name and their backend's type and
+  // display_name are set.
   common.User author = 5;
   common.Backend author_backend = 6;
 }
@@ -136,10 +138,12 @@ message ChatRequest {
 message HelloChatEvent {
   // How the backend introduces itself. The ID is the name it gives itself,
   // which MUST be unique among running backends of that type and SHOULD stay
-  // the same across restarts.
+  // the same across restarts. The display name is how people refer to it, such
+  // as "IRC" or "Libera", and is shown with chat relayed from it.
   message Backend {
     string id = 1;
     string type = 2;
+    string display_name = 3;
   }
 
   Backend backend_info = 1;

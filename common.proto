@@ -48,6 +48,10 @@ message Backend {
   string id = 1;
   string type = 2;
   bool connected = 3;
+
+  // How people refer to the backend, such as "IRC" or "Libera". Empty if the
+  // backend didn't give one.
+  string display_name = 4;
 }
 
 // User is someone on a chat service.
