@@ -7,8 +7,40 @@ import "common.proto";
 option java_package = "io.coded.seabird.seabird";
 option go_package = ".;pb";
 
-// Note that the IDs exposed by the Backend, User, and Channel are opaque IDs
-// which seabird-core will handle and route to the correct backend.
+// Backends, channels and users are referred to by the IDs core gave them,
+// which core routes to the correct backend. See common.proto.
+
+// Backend is a chat backend connected to core, or one that has been.
+message Backend {
+  string id = 1;
+  string type = 2;
+  bool connected = 3;
+}
+
+// Channel is a channel on a backend.
+message Channel {
+  string id = 1;
+  string display_name = 2;
+  string topic = 3;
+
+  string backend_id = 4;
+  ChannelState state = 5;
+}
+
+// ChannelState says whether messages can currently be sent to a channel.
+enum ChannelState {
+  CHANNEL_STATE_UNSPECIFIED = 0;
+
+  // The backend is connected and in the channel.
+  CHANNEL_STATE_JOINED = 1;
+
+  // The backend is connected but not in the channel. It left, or core has only
+  // seen messages from the channel without the backend saying it joined.
+  CHANNEL_STATE_NOT_JOINED = 2;
+
+  // The channel's backend isn't connected.
+  CHANNEL_STATE_BACKEND_DISCONNECTED = 3;
+}
 
 message Event {
   oneof inner {
@@ -26,9 +58,29 @@ message Event {
     SendPrivateMessageEvent send_private_message = 8;
     PerformActionEvent perform_action = 9;
     PerformPrivateActionEvent perform_private_action = 10;
+
+    // Events sent by core when backends and channels change.
+    BackendUpdatedEvent backend_updated = 12;
+    ChannelUpdatedEvent channel_updated = 13;
   }
 
   map<string, string> tags = 11;
+}
+
+// BackendUpdatedEvent is sent when a backend connects to core or disconnects
+// from it.
+message BackendUpdatedEvent {
+  Backend backend = 1;
+}
+
+// ChannelUpdatedEvent is sent when anything about a channel changes: its
+// backend joins or leaves it, its backend disconnects, or its display name or
+// topic changes. It carries the whole channel as it now is.
+//
+// When a backend disconnects, its BackendUpdatedEvent comes first, followed by
+// one of these for each channel it was in.
+message ChannelUpdatedEvent {
+  Channel channel = 1;
 }
 
 // Request and response objects
@@ -180,38 +232,45 @@ message LeaveChannelRequest {
 message LeaveChannelResponse {
 }
 
-// Request to list all connected backends.
+// Request to list backends. Only connected backends are listed unless
+// include_disconnected is set.
 message ListBackendsRequest {
+  bool include_disconnected = 1;
 }
 
 message ListBackendsResponse {
-  repeated common.Backend backends = 1;
+  repeated Backend backends = 1;
 }
 
-// Get info about a specific connected backend.
+// Get info about a specific backend. The metadata in the response is only
+// available while the backend is connected.
 message BackendInfoRequest {
   string backend_id = 1;
 }
 
 message BackendInfoResponse {
-  common.Backend backend = 1;
+  Backend backend = 1;
   map<string, string> metadata = 2;
 }
 
+// Request to list channels. An empty backend_id lists every backend's
+// channels. Only joined channels are listed unless include_inactive is set.
 message ListChannelsRequest {
   string backend_id = 1;
+  bool include_inactive = 2;
 }
 
 message ListChannelsResponse {
-  repeated common.Channel channels = 1;
+  repeated Channel channels = 1;
 }
 
+// Get info about any channel core knows about, whatever its state.
 message ChannelInfoRequest {
   string channel_id = 1;
 }
 
 message ChannelInfoResponse {
-  common.Channel channel = 1;
+  Channel channel = 1;
 }
 
 message UpdateChannelInfoRequest {

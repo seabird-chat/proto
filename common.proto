@@ -7,27 +7,23 @@ import "google/protobuf/timestamp.proto";
 option java_package = "io.coded.seabird.common";
 option go_package = ".;pb";
 
-// All IDs come in two forms - relative and absolute. Relative IDs are sent only
-// by chat backends, while Absolute IDs will only be seen by plugins. A backend
-// will only see relative IDs, plugins will only see absolute IDs.
+// Core keeps track of every backend, channel and user it has been told about,
+// and gives each one an ID the first time it appears. That ID stays the same
+// across restarts and reconnects, and it is how plugins refer to the backend,
+// channel or user. It is a prefix naming what it refers to, an underscore, and
+// random characters:
+// - sbb_ for backends
+// - sbc_ for channels
+// - sbu_ for users
 //
-// Relative IDs are a string of any characters which can be properly urlencoded.
+// IDs are opaque. Plugins MUST NOT parse anything past the prefix, and MUST
+// compare them as whole strings.
 //
-// Absolute IDs are a URL with the following parts representing different
-// things:
-// - Scheme refers to the backend type (irc, discord, etc)
-// - Host refers to the ID of the backend
-// - Path refers to the relative ID of this item. Note that this MUST be
-//   properly urlencoded as it can contain characters which would cause it to
-//   parse differently, such as `#`, often used by the IRC backend to represent
-//   channels.
-//
-// An absolute ID MUST be unique among all items in that set, but they do not
-// need to be unique globally.
-//
-// Note that absolute IDs do not match character-for-character between the
-// different backend implementations, but they MUST decode to the same
-// components.
+// Chat backends never see these IDs. They refer to their channels and users
+// the way their chat service does, such as "#chan" on IRC or a numeric ID on
+// Discord, and core translates in both directions. Whatever a backend uses
+// MUST be unique among its channels (or users) and MUST stay the same for as
+// long as the channel or user exists.
 
 // Tags are a set of key-value items which may expose additional information
 // about the given Event.
@@ -53,31 +49,10 @@ option go_package = ".;pb";
 // - proxy/source-user-name - set by the proxy plugin if a message is proxied,
 //   it will contain the original source user name.
 
-// When sent by a chat backend, the ID MAY optionally be used as a hint to the
-// frontend to get the same external ID on reconnection. When sent by core to a
-// plugin, the ID MUST be an ID pointing to an exact backend instance.
-message Backend {
-  string id = 1;
-  string type = 2;
-}
-
-// When sent by a chat backend, the ID MUST be unique across users in that running
-// backend. Failure to follow this will result in incorrect information being
-// sent to plugins. When sent by core to a plugin, the ID MUST be an ID pointing
-// to an instance of a user on chat backend.
+// User is someone on a chat service.
 message User {
   string id = 1;
   string display_name = 2;
-}
-
-// When sent by a chat backend, the ID MUST be unique across channels in that
-// running backend. Failure to follow this will result in incorrect information
-// being sent to plugins. When sent by core to a plugin, the ID MUST be an ID
-// pointing to an instance of a channel on chat backend.
-message Channel {
-  string id = 1;
-  string display_name = 2;
-  string topic = 3;
 }
 
 // ChannelSource represents where a message came from. Note that User is used

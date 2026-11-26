@@ -119,11 +119,18 @@ message ChatRequest {
 // backend_info. If the ID is not provided or is not unique, the connection will
 // be closed.
 //
-// Note that all IDs sent by a chat backend will be automatically namespaced by
-// core based on the backend. As an example, a backend of type "foo" and an ID
-// of "bar" may show up as something like "foo.bar" to plugins.
+// A chat backend refers to its channels and users the way its chat service
+// does, and core translates those to the IDs plugins use. See common.proto.
 message HelloChatEvent {
-  common.Backend backend_info = 1;
+  // How the backend introduces itself. The ID is the name it gives itself,
+  // which MUST be unique among running backends of that type and SHOULD stay
+  // the same across restarts.
+  message Backend {
+    string id = 1;
+    string type = 2;
+  }
+
+  Backend backend_info = 1;
 }
 
 // This is a marker event to respond to seabird-core that performing an action
@@ -139,8 +146,12 @@ message FailedChatEvent {
   string reason = 1;
 }
 
-// JoinChannelEvent will be sent when a user joins a channel. The topic SHOULD
-// be included if possible, but it can be sent in a topic update event later.
+// JoinChannelEvent will be sent when the backend joins a channel. The topic
+// SHOULD be included if possible, but it can be sent in a change event later.
+//
+// Core forgets which channels a backend is in when its stream ends, so a
+// backend MUST send a join for every channel it is in at the start of each
+// stream.
 message JoinChannelChatEvent {
   string channel_id = 1;
   string display_name = 2;
@@ -153,7 +164,7 @@ message LeaveChannelChatEvent {
 }
 
 // ChangeChannelEvent will occur when a channel's display name or topic is
-// updated.
+// updated. It replaces everything previously sent for the channel.
 message ChangeChannelChatEvent {
   string channel_id = 1;
   string display_name = 2;
@@ -167,9 +178,9 @@ message MetadataChatEvent {
 }
 
 // ChatEvent contains all the different event types a chat backend can emit.
-// Note that these are slightly different to the seabird.Event types as channels
-// here will not be mapped to UUIDs and some events are only to support the data
-// that seabird-core tracks.
+// Note that these are slightly different to the seabird.Event types, as
+// channels and users here are referred to the way the chat service does, and
+// some events are only to support the data that seabird-core tracks.
 //
 // HelloChatEvent is the only message type that is required for a chat backend
 // to work.
