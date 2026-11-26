@@ -10,21 +10,31 @@ option go_package = ".;pb";
 // Backends, channels and users are referred to by the IDs core gave them,
 // which core routes to the correct backend. See common.proto.
 
-// Backend is a chat backend connected to core, or one that has been.
-message Backend {
-  string id = 1;
-  string type = 2;
-  bool connected = 3;
-}
-
-// Channel is a channel on a backend.
+// Channel is a channel plugins can talk in: a channel on a backend, or a
+// channel group. A group's state is JOINED if any member is joined,
+// BACKEND_DISCONNECTED if every member's backend is disconnected, and
+// NOT_JOINED otherwise. A group has no topic.
 message Channel {
+  reserved 4;
+  reserved "backend_id";
+
   string id = 1;
   string display_name = 2;
   string topic = 3;
-
-  string backend_id = 4;
   ChannelState state = 5;
+
+  // The backend channels behind this channel. A channel that isn't in a group
+  // lists itself. A group lists its members, and is empty only if it has none.
+  repeated ChannelMember members = 6;
+}
+
+// ChannelMember is a backend channel behind a Channel. Its ID refers to the
+// whole Channel, so sending to it reaches every member.
+message ChannelMember {
+  string id = 1;
+  string backend_id = 2;
+  string display_name = 3;
+  ChannelState state = 4;
 }
 
 // ChannelState says whether messages can currently be sent to a channel.
@@ -70,7 +80,7 @@ message Event {
 // BackendUpdatedEvent is sent when a backend connects to core or disconnects
 // from it.
 message BackendUpdatedEvent {
-  Backend backend = 1;
+  common.Backend backend = 1;
 }
 
 // ChannelUpdatedEvent is sent when anything about a channel changes: its
@@ -221,7 +231,8 @@ message JoinChannelRequest {
 message JoinChannelResponse {
 }
 
-// Request to leave a channel.
+// Request to leave a channel. Channel groups can't be left, and fail with
+// FAILED_PRECONDITION.
 message LeaveChannelRequest {
   string channel_id = 1;
   string exit_message = 2;
@@ -239,7 +250,7 @@ message ListBackendsRequest {
 }
 
 message ListBackendsResponse {
-  repeated Backend backends = 1;
+  repeated common.Backend backends = 1;
 }
 
 // Get info about a specific backend. The metadata in the response is only
@@ -249,12 +260,14 @@ message BackendInfoRequest {
 }
 
 message BackendInfoResponse {
-  Backend backend = 1;
+  common.Backend backend = 1;
   map<string, string> metadata = 2;
 }
 
 // Request to list channels. An empty backend_id lists every backend's
-// channels. Only joined channels are listed unless include_inactive is set.
+// channels, and otherwise only channels with a member on that backend are
+// listed. Channel groups are listed in place of their members. Only joined
+// channels are listed unless include_inactive is set.
 message ListChannelsRequest {
   string backend_id = 1;
   bool include_inactive = 2;
@@ -273,6 +286,8 @@ message ChannelInfoResponse {
   Channel channel = 1;
 }
 
+// Request to update a channel's info. Channel groups can't be updated, and fail
+// with FAILED_PRECONDITION.
 message UpdateChannelInfoRequest {
   string channel_id = 1;
   string topic = 2;

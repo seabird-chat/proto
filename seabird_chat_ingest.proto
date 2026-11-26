@@ -21,6 +21,11 @@ message PerformActionChatRequest {
   common.Block root_block = 4;
 
   map<string, string> tags = 3;
+
+  // Who the action is on behalf of, if anyone. Only set for backends with
+  // BACKEND_FEATURE_AUTHOR. See BackendFeature.
+  common.User author = 5;
+  common.Backend author_backend = 6;
 }
 
 // PerformPrivateActionRequest is often known as /me. Either SuccessChatEvent or
@@ -45,6 +50,11 @@ message SendMessageChatRequest {
   common.Block root_block = 4;
 
   map<string, string> tags = 3;
+
+  // Who the message is on behalf of, if anyone. Only set for backends with
+  // BACKEND_FEATURE_AUTHOR. See BackendFeature.
+  common.User author = 5;
+  common.Backend author_backend = 6;
 }
 
 // SendPrivateMessageChatRequest requests for a message to be sent to a given
@@ -131,6 +141,21 @@ message HelloChatEvent {
   }
 
   Backend backend_info = 1;
+
+  // What the backend supports beyond the basics. Core ignores features it
+  // doesn't know.
+  repeated BackendFeature features = 2;
+}
+
+// BackendFeature is something a backend supports, listed in its hello so core
+// knows what it can send.
+enum BackendFeature {
+  BACKEND_FEATURE_UNSPECIFIED = 0;
+
+  // The backend shows the author of messages and actions sent on someone's
+  // behalf itself, such as by posting under their name. Without it, core
+  // includes the author in the message text and leaves author unset.
+  BACKEND_FEATURE_AUTHOR = 1;
 }
 
 // This is a marker event to respond to seabird-core that performing an action
