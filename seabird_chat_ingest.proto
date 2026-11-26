@@ -23,7 +23,8 @@ message PerformActionChatRequest {
   map<string, string> tags = 3;
 
   // Who the action is on behalf of, if anyone. Only set for backends with
-  // BACKEND_FEATURE_AUTHOR. See BackendFeature.
+  // BACKEND_FEATURE_AUTHOR. See BackendFeature. Backends never see seabird
+  // IDs, so only the author's display_name and their backend's type are set.
   common.User author = 5;
   common.Backend author_backend = 6;
 }
@@ -52,7 +53,8 @@ message SendMessageChatRequest {
   map<string, string> tags = 3;
 
   // Who the message is on behalf of, if anyone. Only set for backends with
-  // BACKEND_FEATURE_AUTHOR. See BackendFeature.
+  // BACKEND_FEATURE_AUTHOR. See BackendFeature. Backends never see seabird
+  // IDs, so only the author's display_name and their backend's type are set.
   common.User author = 5;
   common.Backend author_backend = 6;
 }
