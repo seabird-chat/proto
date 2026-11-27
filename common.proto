@@ -40,8 +40,9 @@ option go_package = ".;pb";
 //
 // Currently known tags:
 // - seabird/link-preview - set to '1' by plugins on a message that previews a
-//   link, such as a page title. Backends whose chat service already shows link
-//   previews MAY drop the message. Other backends send it as usual.
+//   link, such as a page title. Any value means the same, so backends only check
+//   it's set. Backends whose chat service already shows link previews MAY drop
+//   the message. Other backends send it as usual.
 
 // Backend is a chat backend connected to core, or one that has been.
 message Backend {
